@@ -1,0 +1,79 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="person">
+      <h2 data-cy="personDetailsHeading"><span>Person</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ person.id }}</span>
+        </dd>
+        <dt><span>Divorced</span></dt>
+        <dd>
+          <span>{{ person.divorced }}</span>
+        </dd>
+        <dt><span>Name</span></dt>
+        <dd>
+          <span>{{ person.name }}</span>
+        </dd>
+        <dt><span>Img</span></dt>
+        <dd>
+          <span>{{ person.img }}</span>
+        </dd>
+        <dt><span>Gender</span></dt>
+        <dd>
+          <span>{{ person.gender }}</span>
+        </dd>
+        <dt><span>Born</span></dt>
+        <dd>
+          <span>{{ person.born | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Death</span></dt>
+        <dd>
+          <span>{{ person.death | formatMediumDatetime }}</span>
+        </dd>
+        <dt><span>Country</span></dt>
+        <dd>
+          <span>{{ person.country }}</span>
+        </dd>
+        <dt><span>Nationality</span></dt>
+        <dd>
+          <span>{{ person.nationality }}</span>
+        </dd>
+        <dt><span>Father</span></dt>
+        <dd>
+          <div *ngIf="person.father">
+            <a [routerLink]="['/person', person.father.id, 'view']">{{ person.father.id }}</a>
+          </div>
+        </dd>
+        <dt><span>Mother</span></dt>
+        <dd>
+          <div *ngIf="person.mother">
+            <a [routerLink]="['/person', person.mother.id, 'view']">{{ person.mother.id }}</a>
+          </div>
+        </dd>
+        <dt><span>Person</span></dt>
+        <dd>
+          <span *ngFor="let person of person.people; let last = last">
+            <a [routerLink]="['/person', person.id, 'view']">{{ person.name }}</a
+            >{{ last ? '' : ', ' }}
+          </span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/person', person.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

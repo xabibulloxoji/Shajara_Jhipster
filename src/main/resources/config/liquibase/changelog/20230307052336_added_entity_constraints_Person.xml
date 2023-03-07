@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <!--
+        Added the constraints for entity Person.
+    -->
+    <changeSet id="20230307052336-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="father_id"
+                                 baseTableName="person"
+                                 constraintName="fk_person__father_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="person"/>
+
+        <addForeignKeyConstraint baseColumnNames="mother_id"
+                                 baseTableName="person"
+                                 constraintName="fk_person__mother_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="person"/>
+
+        <addForeignKeyConstraint baseColumnNames="person_id"
+                                 baseTableName="rel_person_spouce"
+                                 constraintName="fk_rel_person__person__id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="person"/>
+
+        <addForeignKeyConstraint baseColumnNames="spouce_id"
+                                 baseTableName="rel_person_spouce"
+                                 constraintName="fk_rel_person__spouce__id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="person"/>
+    </changeSet>
+</databaseChangeLog>

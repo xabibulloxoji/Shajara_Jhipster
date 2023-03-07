@@ -1,0 +1,75 @@
+{
+  "applications": "*",
+  "changelogDate": "20230307052336",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "person",
+  "fields": [
+    {
+      "fieldName": "divorced",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "img",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "gender",
+      "fieldType": "Gender",
+      "fieldValues": "MALE,FEMALE"
+    },
+    {
+      "fieldName": "born",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "death",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "country",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "nationality",
+      "fieldType": "String"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": true,
+  "name": "Person",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "person",
+      "relationshipName": "father",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "person",
+      "relationshipName": "mother",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityField": "name",
+      "otherEntityName": "person",
+      "otherEntityRelationshipName": "spouse",
+      "ownerSide": true,
+      "relationshipName": "person",
+      "relationshipType": "many-to-many"
+    },
+    {
+      "otherEntityName": "person",
+      "otherEntityRelationshipName": "person",
+      "ownerSide": false,
+      "relationshipName": "spouse",
+      "relationshipType": "many-to-many"
+    }
+  ],
+  "service": "serviceClass"
+}

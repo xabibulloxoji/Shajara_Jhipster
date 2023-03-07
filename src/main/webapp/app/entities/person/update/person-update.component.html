@@ -1,0 +1,147 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-person-heading" data-cy="PersonCreateUpdateHeading">Create or edit a Person</h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        <div class="row mb-3" *ngIf="editForm.controls.id.value !== null">
+          <label class="form-label" for="field_id">ID</label>
+          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_divorced">Divorced</label>
+          <input type="text" class="form-control" name="divorced" id="field_divorced" data-cy="divorced" formControlName="divorced" />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_name">Name</label>
+          <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_img">Img</label>
+          <input type="text" class="form-control" name="img" id="field_img" data-cy="img" formControlName="img" />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_gender">Gender</label>
+          <select class="form-control" name="gender" formControlName="gender" id="field_gender" data-cy="gender">
+            <option [ngValue]="null"></option>
+            <option *ngFor="let gender of genderValues" [value]="gender">gender</option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_born">Born</label>
+          <div class="d-flex">
+            <input
+              id="field_born"
+              data-cy="born"
+              type="datetime-local"
+              class="form-control"
+              name="born"
+              formControlName="born"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_death">Death</label>
+          <div class="d-flex">
+            <input
+              id="field_death"
+              data-cy="death"
+              type="datetime-local"
+              class="form-control"
+              name="death"
+              formControlName="death"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_country">Country</label>
+          <input type="text" class="form-control" name="country" id="field_country" data-cy="country" formControlName="country" />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_nationality">Nationality</label>
+          <input
+            type="text"
+            class="form-control"
+            name="nationality"
+            id="field_nationality"
+            data-cy="nationality"
+            formControlName="nationality"
+          />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_father">Father</label>
+          <select
+            class="form-control"
+            id="field_father"
+            data-cy="father"
+            name="father"
+            formControlName="father"
+            [compareWith]="comparePerson"
+          >
+            <option [ngValue]="null"></option>
+            <option [ngValue]="personOption" *ngFor="let personOption of peopleSharedCollection">{{ personOption.id }}</option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_mother">Mother</label>
+          <select
+            class="form-control"
+            id="field_mother"
+            data-cy="mother"
+            name="mother"
+            formControlName="mother"
+            [compareWith]="comparePerson"
+          >
+            <option [ngValue]="null"></option>
+            <option [ngValue]="personOption" *ngFor="let personOption of peopleSharedCollection">{{ personOption.id }}</option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label for="field_people">Person</label>
+          <select
+            class="form-control"
+            id="field_people"
+            data-cy="person"
+            multiple
+            name="people"
+            formControlName="people"
+            [compareWith]="comparePerson"
+          >
+            <option [ngValue]="personOption" *ngFor="let personOption of peopleSharedCollection">{{ personOption.name }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

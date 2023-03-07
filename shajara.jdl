@@ -1,0 +1,29 @@
+entity Person {
+    personId String unique maxlength(255)
+	divorced String
+    name String
+    img String
+    gender Gender
+    born Instant
+    death Instant
+    country String
+    nationality String
+}
+
+enum Gender {
+	MALE
+    FEMALE
+}
+
+relationship ManyToOne {
+	Person{father} to Person
+    Person{mother} to Person
+}
+
+relationship ManyToMany {
+  Person{person} to Person{spouse}
+}
+dto * with mapstruct
+paginate * with pagination
+service * with serviceClass
+filter *
