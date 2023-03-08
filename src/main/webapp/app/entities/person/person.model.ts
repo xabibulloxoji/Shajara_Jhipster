@@ -3,7 +3,6 @@ import { Gender } from 'app/entities/enumerations/gender.model';
 
 export interface IPerson {
   id: number;
-  divorced?: string | null;
   name?: string | null;
   img?: string | null;
   gender?: Gender | null;
@@ -15,6 +14,8 @@ export interface IPerson {
   mother?: Pick<IPerson, 'id'> | null;
   people?: Pick<IPerson, 'id' | 'name'>[] | null;
   spouses?: Pick<IPerson, 'id'>[] | null;
+  divorcedPeople?: Pick<IPerson, 'id' | 'name'>[] | null;
+  divorcees?: Pick<IPerson, 'id'>[] | null;
 }
 
 export type NewPerson = Omit<IPerson, 'id'> & { id: null };

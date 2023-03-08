@@ -6,10 +6,6 @@
   "entityTableName": "person",
   "fields": [
     {
-      "fieldName": "divorced",
-      "fieldType": "String"
-    },
-    {
       "fieldName": "name",
       "fieldType": "String"
     },
@@ -68,6 +64,21 @@
       "otherEntityRelationshipName": "person",
       "ownerSide": false,
       "relationshipName": "spouse",
+      "relationshipType": "many-to-many"
+    },
+    {
+      "otherEntityField": "name",
+      "otherEntityName": "person",
+      "otherEntityRelationshipName": "divorcees",
+      "ownerSide": true,
+      "relationshipName": "divorcedPeople",
+      "relationshipType": "many-to-many"
+    },
+    {
+      "otherEntityName": "person",
+      "otherEntityRelationshipName": "divorcedPeople",
+      "ownerSide": false,
+      "relationshipName": "divorcees",
       "relationshipType": "many-to-many"
     }
   ],

@@ -9,24 +9,23 @@ export const sampleWithRequiredData: IPerson = {
 };
 
 export const sampleWithPartialData: IPerson = {
-  id: 14129,
-  divorced: 'blue',
-  name: 'Fantastic',
-  gender: Gender['MALE'],
-  death: dayjs('2023-03-06T14:11'),
-  country: 'New Caledonia',
+  id: 48306,
+  name: 'Intelligent',
+  img: 'Cotton payment',
+  born: dayjs('2023-03-07T01:13'),
+  country: 'Georgia',
+  nationality: 'Avon',
 };
 
 export const sampleWithFullData: IPerson = {
-  id: 36050,
-  divorced: 'concept',
-  name: 'Dominican',
-  img: 'capacitor Sleek Kwacha',
-  gender: Gender['FEMALE'],
-  born: dayjs('2023-03-07T01:38'),
-  death: dayjs('2023-03-06T21:18'),
-  country: 'Botswana',
-  nationality: 'Product',
+  id: 22115,
+  name: 'Developer Program',
+  img: 'Wooden Designer',
+  gender: Gender['MALE'],
+  born: dayjs('2023-03-06T21:18'),
+  death: dayjs('2023-03-07T02:40'),
+  country: 'Dominica',
+  nationality: 'client-driven Phased program',
 };
 
 export const sampleWithNewData: NewPerson = {

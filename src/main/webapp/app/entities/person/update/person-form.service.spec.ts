@@ -20,7 +20,6 @@ describe('Person Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            divorced: expect.any(Object),
             name: expect.any(Object),
             img: expect.any(Object),
             gender: expect.any(Object),
@@ -32,6 +31,8 @@ describe('Person Form Service', () => {
             mother: expect.any(Object),
             people: expect.any(Object),
             spouses: expect.any(Object),
+            divorcedPeople: expect.any(Object),
+            divorcees: expect.any(Object),
           })
         );
       });
@@ -42,7 +43,6 @@ describe('Person Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            divorced: expect.any(Object),
             name: expect.any(Object),
             img: expect.any(Object),
             gender: expect.any(Object),
@@ -54,6 +54,8 @@ describe('Person Form Service', () => {
             mother: expect.any(Object),
             people: expect.any(Object),
             spouses: expect.any(Object),
+            divorcedPeople: expect.any(Object),
+            divorcees: expect.any(Object),
           })
         );
       });

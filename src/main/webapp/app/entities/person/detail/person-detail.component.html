@@ -14,10 +14,6 @@
         <dd>
           <span>{{ person.id }}</span>
         </dd>
-        <dt><span>Divorced</span></dt>
-        <dd>
-          <span>{{ person.divorced }}</span>
-        </dd>
         <dt><span>Name</span></dt>
         <dd>
           <span>{{ person.name }}</span>
@@ -62,6 +58,13 @@
         <dd>
           <span *ngFor="let person of person.people; let last = last">
             <a [routerLink]="['/person', person.id, 'view']">{{ person.name }}</a
+            >{{ last ? '' : ', ' }}
+          </span>
+        </dd>
+        <dt><span>Divorced People</span></dt>
+        <dd>
+          <span *ngFor="let divorcedPeople of person.divorcedPeople; let last = last">
+            <a [routerLink]="['/person', divorcedPeople.id, 'view']">{{ divorcedPeople.name }}</a
             >{{ last ? '' : ', ' }}
           </span>
         </dd>

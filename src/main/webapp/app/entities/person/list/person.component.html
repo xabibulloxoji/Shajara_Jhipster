@@ -40,12 +40,6 @@
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="divorced">
-            <div class="d-flex">
-              <span>Divorced</span>
-              <fa-icon class="p-1" icon="sort"></fa-icon>
-            </div>
-          </th>
           <th scope="col" jhiSortBy="name">
             <div class="d-flex">
               <span>Name</span>
@@ -108,7 +102,6 @@
           <td>
             <a [routerLink]="['/person', person.id, 'view']">{{ person.id }}</a>
           </td>
-          <td>{{ person.divorced }}</td>
           <td>{{ person.name }}</td>
           <td>{{ person.img }}</td>
           <td>{{ person.gender }}</td>
@@ -132,6 +125,16 @@
                 type="submit"
                 [routerLink]="['/person']"
                 [queryParams]="{ 'filter[personId.in]': person.id }"
+                class="btn btn-info btn-sm"
+                data-cy="filterOtherEntityButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline">Show Person</span>
+              </button>
+              <button
+                type="submit"
+                [routerLink]="['/person']"
+                [queryParams]="{ 'filter[divorcedPeopleId.in]': person.id }"
                 class="btn btn-info btn-sm"
                 data-cy="filterOtherEntityButton"
               >

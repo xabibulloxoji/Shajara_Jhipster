@@ -104,7 +104,7 @@ public class PersonService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<PersonDTO> findOne(Long id) {
+    public Optional<PersonDTO> findOne(String id) {
         log.debug("Request to get Person : {}", id);
         return personRepository.findOneWithEagerRelationships(id).map(personMapper::toDto);
     }
@@ -114,7 +114,7 @@ public class PersonService {
      *
      * @param id the id of the entity.
      */
-    public void delete(Long id) {
+    public void delete(String id) {
         log.debug("Request to delete Person : {}", id);
         personRepository.deleteById(id);
     }

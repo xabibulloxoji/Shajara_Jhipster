@@ -82,7 +82,8 @@ export class PersonUpdateComponent implements OnInit {
       this.peopleSharedCollection,
       person.father,
       person.mother,
-      ...(person.people ?? [])
+      ...(person.people ?? []),
+      ...(person.divorcedPeople ?? [])
     );
   }
 
@@ -96,7 +97,8 @@ export class PersonUpdateComponent implements OnInit {
             people,
             this.person?.father,
             this.person?.mother,
-            ...(this.person?.people ?? [])
+            ...(this.person?.people ?? []),
+            ...(this.person?.divorcedPeople ?? [])
           )
         )
       )

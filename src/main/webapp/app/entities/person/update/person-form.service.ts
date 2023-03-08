@@ -28,11 +28,10 @@ type PersonFormRawValue = FormValueOf<IPerson>;
 
 type NewPersonFormRawValue = FormValueOf<NewPerson>;
 
-type PersonFormDefaults = Pick<NewPerson, 'id' | 'born' | 'death' | 'people' | 'spouses'>;
+type PersonFormDefaults = Pick<NewPerson, 'id' | 'born' | 'death' | 'people' | 'spouses' | 'divorcedPeople' | 'divorcees'>;
 
 type PersonFormGroupContent = {
   id: FormControl<PersonFormRawValue['id'] | NewPerson['id']>;
-  divorced: FormControl<PersonFormRawValue['divorced']>;
   name: FormControl<PersonFormRawValue['name']>;
   img: FormControl<PersonFormRawValue['img']>;
   gender: FormControl<PersonFormRawValue['gender']>;
@@ -44,6 +43,8 @@ type PersonFormGroupContent = {
   mother: FormControl<PersonFormRawValue['mother']>;
   people: FormControl<PersonFormRawValue['people']>;
   spouses: FormControl<PersonFormRawValue['spouses']>;
+  divorcedPeople: FormControl<PersonFormRawValue['divorcedPeople']>;
+  divorcees: FormControl<PersonFormRawValue['divorcees']>;
 };
 
 export type PersonFormGroup = FormGroup<PersonFormGroupContent>;
@@ -63,7 +64,6 @@ export class PersonFormService {
           validators: [Validators.required],
         }
       ),
-      divorced: new FormControl(personRawValue.divorced),
       name: new FormControl(personRawValue.name),
       img: new FormControl(personRawValue.img),
       gender: new FormControl(personRawValue.gender),
@@ -75,6 +75,8 @@ export class PersonFormService {
       mother: new FormControl(personRawValue.mother),
       people: new FormControl(personRawValue.people ?? []),
       spouses: new FormControl(personRawValue.spouses ?? []),
+      divorcedPeople: new FormControl(personRawValue.divorcedPeople ?? []),
+      divorcees: new FormControl(personRawValue.divorcees ?? []),
     });
   }
 
@@ -101,6 +103,8 @@ export class PersonFormService {
       death: currentTime,
       people: [],
       spouses: [],
+      divorcedPeople: [],
+      divorcees: [],
     };
   }
 
@@ -121,6 +125,8 @@ export class PersonFormService {
       death: person.death ? person.death.format(DATE_TIME_FORMAT) : undefined,
       people: person.people ?? [],
       spouses: person.spouses ?? [],
+      divorcedPeople: person.divorcedPeople ?? [],
+      divorcees: person.divorcees ?? [],
     };
   }
 }

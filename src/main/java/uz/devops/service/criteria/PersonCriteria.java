@@ -39,9 +39,7 @@ public class PersonCriteria implements Serializable, Criteria {
 
     private static final long serialVersionUID = 1L;
 
-    private LongFilter id;
-
-    private StringFilter divorced;
+    private StringFilter id;
 
     private StringFilter name;
 
@@ -57,13 +55,17 @@ public class PersonCriteria implements Serializable, Criteria {
 
     private StringFilter nationality;
 
-    private LongFilter fatherId;
+    private StringFilter fatherId;
 
-    private LongFilter motherId;
+    private StringFilter motherId;
 
-    private LongFilter personId;
+    private StringFilter personId;
 
-    private LongFilter spouseId;
+    private StringFilter spouseId;
+
+    private StringFilter divorcedPeopleId;
+
+    private StringFilter divorceesId;
 
     private Boolean distinct;
 
@@ -71,7 +73,6 @@ public class PersonCriteria implements Serializable, Criteria {
 
     public PersonCriteria(PersonCriteria other) {
         this.id = other.id == null ? null : other.id.copy();
-        this.divorced = other.divorced == null ? null : other.divorced.copy();
         this.name = other.name == null ? null : other.name.copy();
         this.img = other.img == null ? null : other.img.copy();
         this.gender = other.gender == null ? null : other.gender.copy();
@@ -83,6 +84,8 @@ public class PersonCriteria implements Serializable, Criteria {
         this.motherId = other.motherId == null ? null : other.motherId.copy();
         this.personId = other.personId == null ? null : other.personId.copy();
         this.spouseId = other.spouseId == null ? null : other.spouseId.copy();
+        this.divorcedPeopleId = other.divorcedPeopleId == null ? null : other.divorcedPeopleId.copy();
+        this.divorceesId = other.divorceesId == null ? null : other.divorceesId.copy();
         this.distinct = other.distinct;
     }
 
@@ -91,34 +94,19 @@ public class PersonCriteria implements Serializable, Criteria {
         return new PersonCriteria(this);
     }
 
-    public LongFilter getId() {
+    public StringFilter getId() {
         return id;
     }
 
-    public LongFilter id() {
+    public StringFilter id() {
         if (id == null) {
-            id = new LongFilter();
+            id = new StringFilter();
         }
         return id;
     }
 
-    public void setId(LongFilter id) {
+    public void setId(StringFilter id) {
         this.id = id;
-    }
-
-    public StringFilter getDivorced() {
-        return divorced;
-    }
-
-    public StringFilter divorced() {
-        if (divorced == null) {
-            divorced = new StringFilter();
-        }
-        return divorced;
-    }
-
-    public void setDivorced(StringFilter divorced) {
-        this.divorced = divorced;
     }
 
     public StringFilter getName() {
@@ -226,64 +214,94 @@ public class PersonCriteria implements Serializable, Criteria {
         this.nationality = nationality;
     }
 
-    public LongFilter getFatherId() {
+    public StringFilter getFatherId() {
         return fatherId;
     }
 
-    public LongFilter fatherId() {
+    public StringFilter fatherId() {
         if (fatherId == null) {
-            fatherId = new LongFilter();
+            fatherId = new StringFilter();
         }
         return fatherId;
     }
 
-    public void setFatherId(LongFilter fatherId) {
+    public void setFatherId(StringFilter fatherId) {
         this.fatherId = fatherId;
     }
 
-    public LongFilter getMotherId() {
+    public StringFilter getMotherId() {
         return motherId;
     }
 
-    public LongFilter motherId() {
+    public StringFilter motherId() {
         if (motherId == null) {
-            motherId = new LongFilter();
+            motherId = new StringFilter();
         }
         return motherId;
     }
 
-    public void setMotherId(LongFilter motherId) {
+    public void setMotherId(StringFilter motherId) {
         this.motherId = motherId;
     }
 
-    public LongFilter getPersonId() {
+    public StringFilter getPersonId() {
         return personId;
     }
 
-    public LongFilter personId() {
+    public StringFilter personId() {
         if (personId == null) {
-            personId = new LongFilter();
+            personId = new StringFilter();
         }
         return personId;
     }
 
-    public void setPersonId(LongFilter personId) {
+    public void setPersonId(StringFilter personId) {
         this.personId = personId;
     }
 
-    public LongFilter getSpouseId() {
+    public StringFilter getSpouseId() {
         return spouseId;
     }
 
-    public LongFilter spouseId() {
+    public StringFilter spouseId() {
         if (spouseId == null) {
-            spouseId = new LongFilter();
+            spouseId = new StringFilter();
         }
         return spouseId;
     }
 
-    public void setSpouseId(LongFilter spouseId) {
+    public void setSpouseId(StringFilter spouseId) {
         this.spouseId = spouseId;
+    }
+
+    public StringFilter getDivorcedPeopleId() {
+        return divorcedPeopleId;
+    }
+
+    public StringFilter divorcedPeopleId() {
+        if (divorcedPeopleId == null) {
+            divorcedPeopleId = new StringFilter();
+        }
+        return divorcedPeopleId;
+    }
+
+    public void setDivorcedPeopleId(StringFilter divorcedPeopleId) {
+        this.divorcedPeopleId = divorcedPeopleId;
+    }
+
+    public StringFilter getDivorceesId() {
+        return divorceesId;
+    }
+
+    public StringFilter divorceesId() {
+        if (divorceesId == null) {
+            divorceesId = new StringFilter();
+        }
+        return divorceesId;
+    }
+
+    public void setDivorceesId(StringFilter divorceesId) {
+        this.divorceesId = divorceesId;
     }
 
     public Boolean getDistinct() {
@@ -305,7 +323,6 @@ public class PersonCriteria implements Serializable, Criteria {
         final PersonCriteria that = (PersonCriteria) o;
         return (
             Objects.equals(id, that.id) &&
-            Objects.equals(divorced, that.divorced) &&
             Objects.equals(name, that.name) &&
             Objects.equals(img, that.img) &&
             Objects.equals(gender, that.gender) &&
@@ -317,6 +334,8 @@ public class PersonCriteria implements Serializable, Criteria {
             Objects.equals(motherId, that.motherId) &&
             Objects.equals(personId, that.personId) &&
             Objects.equals(spouseId, that.spouseId) &&
+            Objects.equals(divorcedPeopleId, that.divorcedPeopleId) &&
+            Objects.equals(divorceesId, that.divorceesId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -325,7 +344,6 @@ public class PersonCriteria implements Serializable, Criteria {
     public int hashCode() {
         return Objects.hash(
             id,
-            divorced,
             name,
             img,
             gender,
@@ -337,6 +355,8 @@ public class PersonCriteria implements Serializable, Criteria {
             motherId,
             personId,
             spouseId,
+            divorcedPeopleId,
+            divorceesId,
             distinct
         );
     }
@@ -346,7 +366,6 @@ public class PersonCriteria implements Serializable, Criteria {
     public String toString() {
         return "PersonCriteria{" +
             (id != null ? "id=" + id + ", " : "") +
-            (divorced != null ? "divorced=" + divorced + ", " : "") +
             (name != null ? "name=" + name + ", " : "") +
             (img != null ? "img=" + img + ", " : "") +
             (gender != null ? "gender=" + gender + ", " : "") +
@@ -358,6 +377,8 @@ public class PersonCriteria implements Serializable, Criteria {
             (motherId != null ? "motherId=" + motherId + ", " : "") +
             (personId != null ? "personId=" + personId + ", " : "") +
             (spouseId != null ? "spouseId=" + spouseId + ", " : "") +
+            (divorcedPeopleId != null ? "divorcedPeopleId=" + divorcedPeopleId + ", " : "") +
+            (divorceesId != null ? "divorceesId=" + divorceesId + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +
             "}";
     }

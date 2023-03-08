@@ -13,9 +13,7 @@ import uz.devops.domain.enumeration.Gender;
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class PersonDTO implements Serializable {
 
-    private Long id;
-
-    private String divorced;
+    private String id;
 
     private String name;
 
@@ -37,20 +35,14 @@ public class PersonDTO implements Serializable {
 
     private Set<PersonDTO> people = new HashSet<>();
 
-    public Long getId() {
+    private Set<PersonDTO> divorcedPeople = new HashSet<>();
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
-    }
-
-    public String getDivorced() {
-        return divorced;
-    }
-
-    public void setDivorced(String divorced) {
-        this.divorced = divorced;
     }
 
     public String getName() {
@@ -133,6 +125,14 @@ public class PersonDTO implements Serializable {
         this.people = people;
     }
 
+    public Set<PersonDTO> getDivorcedPeople() {
+        return divorcedPeople;
+    }
+
+    public void setDivorcedPeople(Set<PersonDTO> divorcedPeople) {
+        this.divorcedPeople = divorcedPeople;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -159,7 +159,6 @@ public class PersonDTO implements Serializable {
     public String toString() {
         return "PersonDTO{" +
             "id=" + getId() +
-            ", divorced='" + getDivorced() + "'" +
             ", name='" + getName() + "'" +
             ", img='" + getImg() + "'" +
             ", gender='" + getGender() + "'" +
@@ -170,6 +169,7 @@ public class PersonDTO implements Serializable {
             ", father=" + getFather() +
             ", mother=" + getMother() +
             ", people=" + getPeople() +
+            ", divorcedPeople=" + getDivorcedPeople() +
             "}";
     }
 }

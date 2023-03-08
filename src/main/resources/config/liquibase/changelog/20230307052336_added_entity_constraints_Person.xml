@@ -21,14 +21,26 @@
                                  referencedTableName="person"/>
 
         <addForeignKeyConstraint baseColumnNames="person_id"
-                                 baseTableName="rel_person_spouce"
-                                 constraintName="fk_rel_person__person__id"
+                                 baseTableName="rel_person_spouse"
+                                 constraintName="fk_rel_person_spouse__person_id"
                                  referencedColumnNames="id"
                                  referencedTableName="person"/>
 
-        <addForeignKeyConstraint baseColumnNames="spouce_id"
-                                 baseTableName="rel_person_spouce"
-                                 constraintName="fk_rel_person__spouce__id"
+        <addForeignKeyConstraint baseColumnNames="spouse_id"
+                                 baseTableName="rel_person_spouse"
+                                 constraintName="fk_rel_person_spouse__spouse_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="person"/>
+
+        <addForeignKeyConstraint baseColumnNames="person_id"
+                                 baseTableName="rel_person_divorced"
+                                 constraintName="fk_rel_person__divorced_people__person_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="person"/>
+
+        <addForeignKeyConstraint baseColumnNames="divorced_id"
+                                 baseTableName="rel_person_divorced"
+                                 constraintName="fk_rel_person__divorced_people__divorced_people_id"
                                  referencedColumnNames="id"
                                  referencedTableName="person"/>
     </changeSet>

@@ -22,10 +22,7 @@ public class Person implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
     @Column(name = "id")
-    private Long id;
-
-    @Column(name = "divorced")
-    private String divorced;
+    private String id;
 
     @Column(name = "name")
     private String name;
@@ -50,11 +47,11 @@ public class Person implements Serializable {
     private String nationality;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "father", "mother", "people", "spouses" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "father", "mother", "people", "spouses", "divorcedPeople", "divorcees" }, allowSetters = true)
     private Person father;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "father", "mother", "people", "spouses" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "father", "mother", "people", "spouses", "divorcedPeople", "divorcees" }, allowSetters = true)
     private Person mother;
 
     @ManyToMany
@@ -70,32 +67,32 @@ public class Person implements Serializable {
     @JsonIgnoreProperties(value = { "father", "mother", "people", "spouses" }, allowSetters = true)
     private Set<Person> spouses = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(
+        name = "rel_person__divorced_people",
+        joinColumns = @JoinColumn(name = "person_id"),
+        inverseJoinColumns = @JoinColumn(name = "divorced_people_id")
+    )
+    @JsonIgnoreProperties(value = { "father", "mother", "people", "spouses", "divorcedPeople", "divorcees" }, allowSetters = true)
+    private Set<Person> divorcedPeople = new HashSet<>();
+
+    @ManyToMany(mappedBy = "divorcedPeople")
+    @JsonIgnoreProperties(value = { "father", "mother", "people", "spouses", "divorcedPeople", "divorcees" }, allowSetters = true)
+    private Set<Person> divorcees = new HashSet<>();
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
-    public Long getId() {
+    public String getId() {
         return this.id;
     }
 
-    public Person id(Long id) {
+    public Person id(String id) {
         this.setId(id);
         return this;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
-    }
-
-    public String getDivorced() {
-        return this.divorced;
-    }
-
-    public Person divorced(String divorced) {
-        this.setDivorced(divorced);
-        return this;
-    }
-
-    public void setDivorced(String divorced) {
-        this.divorced = divorced;
     }
 
     public String getName() {
@@ -271,6 +268,62 @@ public class Person implements Serializable {
         return this;
     }
 
+    public Set<Person> getDivorcedPeople() {
+        return this.divorcedPeople;
+    }
+
+    public void setDivorcedPeople(Set<Person> people) {
+        this.divorcedPeople = people;
+    }
+
+    public Person divorcedPeople(Set<Person> people) {
+        this.setDivorcedPeople(people);
+        return this;
+    }
+
+    public Person addDivorcedPeople(Person person) {
+        this.divorcedPeople.add(person);
+        person.getDivorcees().add(this);
+        return this;
+    }
+
+    public Person removeDivorcedPeople(Person person) {
+        this.divorcedPeople.remove(person);
+        person.getDivorcees().remove(this);
+        return this;
+    }
+
+    public Set<Person> getDivorcees() {
+        return this.divorcees;
+    }
+
+    public void setDivorcees(Set<Person> people) {
+        if (this.divorcees != null) {
+            this.divorcees.forEach(i -> i.removeDivorcedPeople(this));
+        }
+        if (people != null) {
+            people.forEach(i -> i.addDivorcedPeople(this));
+        }
+        this.divorcees = people;
+    }
+
+    public Person divorcees(Set<Person> people) {
+        this.setDivorcees(people);
+        return this;
+    }
+
+    public Person addDivorcees(Person person) {
+        this.divorcees.add(person);
+        person.getDivorcedPeople().add(this);
+        return this;
+    }
+
+    public Person removeDivorcees(Person person) {
+        this.divorcees.remove(person);
+        person.getDivorcedPeople().remove(this);
+        return this;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -295,7 +348,6 @@ public class Person implements Serializable {
     public String toString() {
         return "Person{" +
             "id=" + getId() +
-            ", divorced='" + getDivorced() + "'" +
             ", name='" + getName() + "'" +
             ", img='" + getImg() + "'" +
             ", gender='" + getGender() + "'" +

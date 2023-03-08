@@ -17,8 +17,9 @@ import uz.devops.domain.Person;
  */
 @Repository
 public interface PersonRepository
-    extends PersonRepositoryWithBagRelationships, JpaRepository<Person, Long>, JpaSpecificationExecutor<Person> {
-    default Optional<Person> findOneWithEagerRelationships(Long id) {
+    extends PersonRepositoryWithBagRelationships, JpaRepository<Person, String>,
+    JpaSpecificationExecutor<Person> {
+    default Optional<Person> findOneWithEagerRelationships(String id) {
         return this.fetchBagRelationships(this.findById(id));
     }
 
@@ -29,6 +30,4 @@ public interface PersonRepository
     default Page<Person> findAllWithEagerRelationships(Pageable pageable) {
         return this.fetchBagRelationships(this.findAll(pageable));
     }
-
-
 }

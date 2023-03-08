@@ -12,11 +12,6 @@
         </div>
 
         <div class="row mb-3">
-          <label class="form-label" for="field_divorced">Divorced</label>
-          <input type="text" class="form-control" name="divorced" id="field_divorced" data-cy="divorced" formControlName="divorced" />
-        </div>
-
-        <div class="row mb-3">
           <label class="form-label" for="field_name">Name</label>
           <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
         </div>
@@ -120,6 +115,21 @@
             multiple
             name="people"
             formControlName="people"
+            [compareWith]="comparePerson"
+          >
+            <option [ngValue]="personOption" *ngFor="let personOption of peopleSharedCollection">{{ personOption.name }}</option>
+          </select>
+        </div>
+
+        <div class="row mb-3">
+          <label for="field_divorcedPeople">Divorced People</label>
+          <select
+            class="form-control"
+            id="field_divorcedPeople"
+            data-cy="divorcedPeople"
+            multiple
+            name="divorcedPeople"
+            formControlName="divorcedPeople"
             [compareWith]="comparePerson"
           >
             <option [ngValue]="personOption" *ngFor="let personOption of peopleSharedCollection">{{ personOption.name }}</option>

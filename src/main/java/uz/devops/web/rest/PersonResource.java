@@ -82,7 +82,7 @@ public class PersonResource {
      */
     @PutMapping("/people/{id}")
     public ResponseEntity<PersonDTO> updatePerson(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final String id,
         @RequestBody PersonDTO personDTO
     ) throws URISyntaxException {
         log.debug("REST request to update Person : {}, {}", id, personDTO);
@@ -117,7 +117,7 @@ public class PersonResource {
      */
     @PatchMapping(value = "/people/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<PersonDTO> partialUpdatePerson(
-        @PathVariable(value = "id", required = false) final Long id,
+        @PathVariable(value = "id", required = false) final String id,
         @RequestBody PersonDTO personDTO
     ) throws URISyntaxException {
         log.debug("REST request to partial update Person partially : {}, {}", id, personDTO);
@@ -177,7 +177,7 @@ public class PersonResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the personDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/people/{id}")
-    public ResponseEntity<PersonDTO> getPerson(@PathVariable Long id) {
+    public ResponseEntity<PersonDTO> getPerson(@PathVariable String id) {
         log.debug("REST request to get Person : {}", id);
         Optional<PersonDTO> personDTO = personService.findOne(id);
         return ResponseUtil.wrapOrNotFound(personDTO);
@@ -190,7 +190,7 @@ public class PersonResource {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/people/{id}")
-    public ResponseEntity<Void> deletePerson(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePerson(@PathVariable String id) {
         log.debug("REST request to delete Person : {}", id);
         personService.delete(id);
         return ResponseEntity

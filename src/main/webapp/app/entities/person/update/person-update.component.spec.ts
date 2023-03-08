@@ -53,10 +53,12 @@ describe('Person Management Update Component', () => {
       person.mother = mother;
       const people: IPerson[] = [{ id: 85058 }];
       person.people = people;
+      const divorcedPeople: IPerson[] = [{ id: 39987 }];
+      person.divorcedPeople = divorcedPeople;
 
-      const personCollection: IPerson[] = [{ id: 39987 }];
+      const personCollection: IPerson[] = [{ id: 61309 }];
       jest.spyOn(personService, 'query').mockReturnValue(of(new HttpResponse({ body: personCollection })));
-      const additionalPeople = [father, mother, ...people];
+      const additionalPeople = [father, mother, ...people, ...divorcedPeople];
       const expectedCollection: IPerson[] = [...additionalPeople, ...personCollection];
       jest.spyOn(personService, 'addPersonToCollectionIfMissing').mockReturnValue(expectedCollection);
 
@@ -73,12 +75,14 @@ describe('Person Management Update Component', () => {
 
     it('Should update editForm', () => {
       const person: IPerson = { id: 456 };
-      const father: IPerson = { id: 61309 };
+      const father: IPerson = { id: 13761 };
       person.father = father;
-      const mother: IPerson = { id: 13761 };
+      const mother: IPerson = { id: 81846 };
       person.mother = mother;
-      const person: IPerson = { id: 81846 };
+      const person: IPerson = { id: 75153 };
       person.people = [person];
+      const divorcedPeople: IPerson = { id: 85502 };
+      person.divorcedPeople = [divorcedPeople];
 
       activatedRoute.data = of({ person });
       comp.ngOnInit();
@@ -86,6 +90,7 @@ describe('Person Management Update Component', () => {
       expect(comp.peopleSharedCollection).toContain(father);
       expect(comp.peopleSharedCollection).toContain(mother);
       expect(comp.peopleSharedCollection).toContain(person);
+      expect(comp.peopleSharedCollection).toContain(divorcedPeople);
       expect(comp.person).toEqual(person);
     });
   });

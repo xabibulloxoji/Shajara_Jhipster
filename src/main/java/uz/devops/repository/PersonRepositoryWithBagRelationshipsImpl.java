@@ -22,7 +22,7 @@ public class PersonRepositoryWithBagRelationshipsImpl implements PersonRepositor
 
     @Override
     public Optional<Person> fetchBagRelationships(Optional<Person> person) {
-        return person.map(this::fetchPeople);
+        return person.map(this::fetchPeople).map(this::fetchDivorcedPeople);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class PersonRepositoryWithBagRelationshipsImpl implements PersonRepositor
 
     @Override
     public List<Person> fetchBagRelationships(List<Person> people) {
-        return Optional.of(people).map(this::fetchPeople).orElse(Collections.emptyList());
+        return Optional.of(people).map(this::fetchPeople).map(this::fetchDivorcedPeople).orElse(Collections.emptyList());
     }
 
     Person fetchPeople(Person result) {
@@ -48,6 +48,29 @@ public class PersonRepositoryWithBagRelationshipsImpl implements PersonRepositor
         IntStream.range(0, people.size()).forEach(index -> order.put(people.get(index).getId(), index));
         List<Person> result = entityManager
             .createQuery("select distinct person from Person person left join fetch person.people where person in :people", Person.class)
+            .setParameter("people", people)
+            .setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
+            .getResultList();
+        Collections.sort(result, (o1, o2) -> Integer.compare(order.get(o1.getId()), order.get(o2.getId())));
+        return result;
+    }
+
+    Person fetchDivorcedPeople(Person result) {
+        return entityManager
+            .createQuery("select person from Person person left join fetch person.divorcedPeople where person is :person", Person.class)
+            .setParameter("person", result)
+            .setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
+            .getSingleResult();
+    }
+
+    List<Person> fetchDivorcedPeople(List<Person> people) {
+        HashMap<Object, Integer> order = new HashMap<>();
+        IntStream.range(0, people.size()).forEach(index -> order.put(people.get(index).getId(), index));
+        List<Person> result = entityManager
+            .createQuery(
+                "select distinct person from Person person left join fetch person.divorcedPeople where person in :people",
+                Person.class
+            )
             .setParameter("people", people)
             .setHint(QueryHints.PASS_DISTINCT_THROUGH, false)
             .getResultList();

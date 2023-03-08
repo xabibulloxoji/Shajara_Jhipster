@@ -21,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -28,9 +29,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import uz.devops.IntegrationTest;
 import uz.devops.domain.Person;
+import uz.devops.domain.Person;
 import uz.devops.domain.enumeration.Gender;
 import uz.devops.repository.PersonRepository;
 import uz.devops.service.PersonService;
+import uz.devops.service.criteria.PersonCriteria;
 import uz.devops.service.dto.PersonDTO;
 import uz.devops.service.mapper.PersonMapper;
 
@@ -42,9 +45,6 @@ import uz.devops.service.mapper.PersonMapper;
 @AutoConfigureMockMvc
 @WithMockUser
 class PersonResourceIT {
-
-    private static final String DEFAULT_DIVORCED = "AAAAAAAAAA";
-    private static final String UPDATED_DIVORCED = "BBBBBBBBBB";
 
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
@@ -71,7 +71,7 @@ class PersonResourceIT {
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
     private static Random random = new Random();
-    private static AtomicLong count = new AtomicLong(random.nextInt() + (2 * java.lang.Integer.MAX_VALUE));
+    private static AtomicLong count = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
 
     @Autowired
     private PersonRepository personRepository;
@@ -101,7 +101,6 @@ class PersonResourceIT {
      */
     public static Person createEntity(EntityManager em) {
         Person person = new Person()
-            .divorced(DEFAULT_DIVORCED)
             .name(DEFAULT_NAME)
             .img(DEFAULT_IMG)
             .gender(DEFAULT_GENDER)
@@ -120,7 +119,6 @@ class PersonResourceIT {
      */
     public static Person createUpdatedEntity(EntityManager em) {
         Person person = new Person()
-            .divorced(UPDATED_DIVORCED)
             .name(UPDATED_NAME)
             .img(UPDATED_IMG)
             .gender(UPDATED_GENDER)
@@ -150,7 +148,6 @@ class PersonResourceIT {
         List<Person> personList = personRepository.findAll();
         assertThat(personList).hasSize(databaseSizeBeforeCreate + 1);
         Person testPerson = personList.get(personList.size() - 1);
-        assertThat(testPerson.getDivorced()).isEqualTo(DEFAULT_DIVORCED);
         assertThat(testPerson.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testPerson.getImg()).isEqualTo(DEFAULT_IMG);
         assertThat(testPerson.getGender()).isEqualTo(DEFAULT_GENDER);
@@ -164,7 +161,7 @@ class PersonResourceIT {
     @Transactional
     void createPersonWithExistingId() throws Exception {
         // Create the Person with an existing ID
-        person.setId(1L);
+        person.setId("1L");
         PersonDTO personDTO = personMapper.toDto(person);
 
         int databaseSizeBeforeCreate = personRepository.findAll().size();
@@ -190,8 +187,7 @@ class PersonResourceIT {
             .perform(get(ENTITY_API_URL + "?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(person.getId().intValue())))
-            .andExpect(jsonPath("$.[*].divorced").value(hasItem(DEFAULT_DIVORCED)))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(person.getId())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].img").value(hasItem(DEFAULT_IMG)))
             .andExpect(jsonPath("$.[*].gender").value(hasItem(DEFAULT_GENDER.toString())))
@@ -229,8 +225,7 @@ class PersonResourceIT {
             .perform(get(ENTITY_API_URL_ID, person.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(person.getId().intValue()))
-            .andExpect(jsonPath("$.divorced").value(DEFAULT_DIVORCED))
+            .andExpect(jsonPath("$.id").value(person.getId()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.img").value(DEFAULT_IMG))
             .andExpect(jsonPath("$.gender").value(DEFAULT_GENDER.toString()))
@@ -246,7 +241,7 @@ class PersonResourceIT {
         // Initialize the database
         personRepository.saveAndFlush(person);
 
-        Long id = person.getId();
+        String id = person.getId();
 
         defaultPersonShouldBeFound("id.equals=" + id);
         defaultPersonShouldNotBeFound("id.notEquals=" + id);
@@ -256,71 +251,6 @@ class PersonResourceIT {
 
         defaultPersonShouldBeFound("id.lessThanOrEqual=" + id);
         defaultPersonShouldNotBeFound("id.lessThan=" + id);
-    }
-
-    @Test
-    @Transactional
-    void getAllPeopleByDivorcedIsEqualToSomething() throws Exception {
-        // Initialize the database
-        personRepository.saveAndFlush(person);
-
-        // Get all the personList where divorced equals to DEFAULT_DIVORCED
-        defaultPersonShouldBeFound("divorced.equals=" + DEFAULT_DIVORCED);
-
-        // Get all the personList where divorced equals to UPDATED_DIVORCED
-        defaultPersonShouldNotBeFound("divorced.equals=" + UPDATED_DIVORCED);
-    }
-
-    @Test
-    @Transactional
-    void getAllPeopleByDivorcedIsInShouldWork() throws Exception {
-        // Initialize the database
-        personRepository.saveAndFlush(person);
-
-        // Get all the personList where divorced in DEFAULT_DIVORCED or UPDATED_DIVORCED
-        defaultPersonShouldBeFound("divorced.in=" + DEFAULT_DIVORCED + "," + UPDATED_DIVORCED);
-
-        // Get all the personList where divorced equals to UPDATED_DIVORCED
-        defaultPersonShouldNotBeFound("divorced.in=" + UPDATED_DIVORCED);
-    }
-
-    @Test
-    @Transactional
-    void getAllPeopleByDivorcedIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        personRepository.saveAndFlush(person);
-
-        // Get all the personList where divorced is not null
-        defaultPersonShouldBeFound("divorced.specified=true");
-
-        // Get all the personList where divorced is null
-        defaultPersonShouldNotBeFound("divorced.specified=false");
-    }
-
-    @Test
-    @Transactional
-    void getAllPeopleByDivorcedContainsSomething() throws Exception {
-        // Initialize the database
-        personRepository.saveAndFlush(person);
-
-        // Get all the personList where divorced contains DEFAULT_DIVORCED
-        defaultPersonShouldBeFound("divorced.contains=" + DEFAULT_DIVORCED);
-
-        // Get all the personList where divorced contains UPDATED_DIVORCED
-        defaultPersonShouldNotBeFound("divorced.contains=" + UPDATED_DIVORCED);
-    }
-
-    @Test
-    @Transactional
-    void getAllPeopleByDivorcedNotContainsSomething() throws Exception {
-        // Initialize the database
-        personRepository.saveAndFlush(person);
-
-        // Get all the personList where divorced does not contain DEFAULT_DIVORCED
-        defaultPersonShouldNotBeFound("divorced.doesNotContain=" + DEFAULT_DIVORCED);
-
-        // Get all the personList where divorced does not contain UPDATED_DIVORCED
-        defaultPersonShouldBeFound("divorced.doesNotContain=" + UPDATED_DIVORCED);
     }
 
     @Test
@@ -714,7 +644,7 @@ class PersonResourceIT {
         em.flush();
         person.setFather(father);
         personRepository.saveAndFlush(person);
-        Long fatherId = father.getId();
+        String fatherId = father.getId();
 
         // Get all the personList where father equals to fatherId
         defaultPersonShouldBeFound("fatherId.equals=" + fatherId);
@@ -737,7 +667,7 @@ class PersonResourceIT {
         em.flush();
         person.setMother(mother);
         personRepository.saveAndFlush(person);
-        Long motherId = mother.getId();
+        String motherId = mother.getId();
 
         // Get all the personList where mother equals to motherId
         defaultPersonShouldBeFound("motherId.equals=" + motherId);
@@ -749,7 +679,7 @@ class PersonResourceIT {
     @Test
     @Transactional
     void getAllPeopleByPersonIsEqualToSomething() throws Exception {
-        Person person;
+        Person person = null;
         if (TestUtil.findAll(em, Person.class).isEmpty()) {
             personRepository.saveAndFlush(person);
             person = PersonResourceIT.createEntity(em);
@@ -760,7 +690,7 @@ class PersonResourceIT {
         em.flush();
         person.addPerson(person);
         personRepository.saveAndFlush(person);
-        Long personId = person.getId();
+        String personId = person.getId();
 
         // Get all the personList where person equals to personId
         defaultPersonShouldBeFound("personId.equals=" + personId);
@@ -783,13 +713,59 @@ class PersonResourceIT {
         em.flush();
         person.addSpouse(spouse);
         personRepository.saveAndFlush(person);
-        Long spouseId = spouse.getId();
+        String spouseId = spouse.getId();
 
         // Get all the personList where spouse equals to spouseId
         defaultPersonShouldBeFound("spouseId.equals=" + spouseId);
 
         // Get all the personList where spouse equals to (spouseId + 1)
         defaultPersonShouldNotBeFound("spouseId.equals=" + (spouseId + 1));
+    }
+
+    @Test
+    @Transactional
+    void getAllPeopleByDivorcedPeopleIsEqualToSomething() throws Exception {
+        Person divorcedPeople;
+        if (TestUtil.findAll(em, Person.class).isEmpty()) {
+            personRepository.saveAndFlush(person);
+            divorcedPeople = PersonResourceIT.createEntity(em);
+        } else {
+            divorcedPeople = TestUtil.findAll(em, Person.class).get(0);
+        }
+        em.persist(divorcedPeople);
+        em.flush();
+        person.addDivorcedPeople(divorcedPeople);
+        personRepository.saveAndFlush(person);
+        String divorcedPeopleId = divorcedPeople.getId();
+
+        // Get all the personList where divorcedPeople equals to divorcedPeopleId
+        defaultPersonShouldBeFound("divorcedPeopleId.equals=" + divorcedPeopleId);
+
+        // Get all the personList where divorcedPeople equals to (divorcedPeopleId + 1)
+        defaultPersonShouldNotBeFound("divorcedPeopleId.equals=" + (divorcedPeopleId + 1));
+    }
+
+    @Test
+    @Transactional
+    void getAllPeopleByDivorceesIsEqualToSomething() throws Exception {
+        Person divorcees;
+        if (TestUtil.findAll(em, Person.class).isEmpty()) {
+            personRepository.saveAndFlush(person);
+            divorcees = PersonResourceIT.createEntity(em);
+        } else {
+            divorcees = TestUtil.findAll(em, Person.class).get(0);
+        }
+        em.persist(divorcees);
+        em.flush();
+        person.addDivorcees(divorcees);
+        personRepository.saveAndFlush(person);
+        String divorceesId = divorcees.getId();
+
+        // Get all the personList where divorcees equals to divorceesId
+        defaultPersonShouldBeFound("divorceesId.equals=" + divorceesId);
+
+        // Get all the personList where divorcees equals to (divorceesId + 1)
+        defaultPersonShouldNotBeFound("divorceesId.equals=" + (divorceesId + 1));
     }
 
     /**
@@ -800,8 +776,7 @@ class PersonResourceIT {
             .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(person.getId().intValue())))
-            .andExpect(jsonPath("$.[*].divorced").value(hasItem(DEFAULT_DIVORCED)))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(person.getId())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].img").value(hasItem(DEFAULT_IMG)))
             .andExpect(jsonPath("$.[*].gender").value(hasItem(DEFAULT_GENDER.toString())))
@@ -857,7 +832,6 @@ class PersonResourceIT {
         // Disconnect from session so that the updates on updatedPerson are not directly saved in db
         em.detach(updatedPerson);
         updatedPerson
-            .divorced(UPDATED_DIVORCED)
             .name(UPDATED_NAME)
             .img(UPDATED_IMG)
             .gender(UPDATED_GENDER)
@@ -879,7 +853,6 @@ class PersonResourceIT {
         List<Person> personList = personRepository.findAll();
         assertThat(personList).hasSize(databaseSizeBeforeUpdate);
         Person testPerson = personList.get(personList.size() - 1);
-        assertThat(testPerson.getDivorced()).isEqualTo(UPDATED_DIVORCED);
         assertThat(testPerson.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testPerson.getImg()).isEqualTo(UPDATED_IMG);
         assertThat(testPerson.getGender()).isEqualTo(UPDATED_GENDER);
@@ -893,7 +866,7 @@ class PersonResourceIT {
     @Transactional
     void putNonExistingPerson() throws Exception {
         int databaseSizeBeforeUpdate = personRepository.findAll().size();
-        person.setId(count.incrementAndGet());
+        person.setId(String.valueOf(count.incrementAndGet()));
 
         // Create the Person
         PersonDTO personDTO = personMapper.toDto(person);
@@ -916,7 +889,7 @@ class PersonResourceIT {
     @Transactional
     void putWithIdMismatchPerson() throws Exception {
         int databaseSizeBeforeUpdate = personRepository.findAll().size();
-        person.setId(count.incrementAndGet());
+        person.setId(String.valueOf(count.incrementAndGet()));
 
         // Create the Person
         PersonDTO personDTO = personMapper.toDto(person);
@@ -939,7 +912,7 @@ class PersonResourceIT {
     @Transactional
     void putWithMissingIdPathParamPerson() throws Exception {
         int databaseSizeBeforeUpdate = personRepository.findAll().size();
-        person.setId(count.incrementAndGet());
+        person.setId(String.valueOf(count.incrementAndGet()));
 
         // Create the Person
         PersonDTO personDTO = personMapper.toDto(person);
@@ -966,7 +939,7 @@ class PersonResourceIT {
         Person partialUpdatedPerson = new Person();
         partialUpdatedPerson.setId(person.getId());
 
-        partialUpdatedPerson.img(UPDATED_IMG).nationality(UPDATED_NATIONALITY);
+        partialUpdatedPerson.gender(UPDATED_GENDER);
 
         restPersonMockMvc
             .perform(
@@ -980,14 +953,13 @@ class PersonResourceIT {
         List<Person> personList = personRepository.findAll();
         assertThat(personList).hasSize(databaseSizeBeforeUpdate);
         Person testPerson = personList.get(personList.size() - 1);
-        assertThat(testPerson.getDivorced()).isEqualTo(DEFAULT_DIVORCED);
         assertThat(testPerson.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testPerson.getImg()).isEqualTo(UPDATED_IMG);
-        assertThat(testPerson.getGender()).isEqualTo(DEFAULT_GENDER);
+        assertThat(testPerson.getImg()).isEqualTo(DEFAULT_IMG);
+        assertThat(testPerson.getGender()).isEqualTo(UPDATED_GENDER);
         assertThat(testPerson.getBorn()).isEqualTo(DEFAULT_BORN);
         assertThat(testPerson.getDeath()).isEqualTo(DEFAULT_DEATH);
         assertThat(testPerson.getCountry()).isEqualTo(DEFAULT_COUNTRY);
-        assertThat(testPerson.getNationality()).isEqualTo(UPDATED_NATIONALITY);
+        assertThat(testPerson.getNationality()).isEqualTo(DEFAULT_NATIONALITY);
     }
 
     @Test
@@ -1003,7 +975,6 @@ class PersonResourceIT {
         partialUpdatedPerson.setId(person.getId());
 
         partialUpdatedPerson
-            .divorced(UPDATED_DIVORCED)
             .name(UPDATED_NAME)
             .img(UPDATED_IMG)
             .gender(UPDATED_GENDER)
@@ -1024,7 +995,6 @@ class PersonResourceIT {
         List<Person> personList = personRepository.findAll();
         assertThat(personList).hasSize(databaseSizeBeforeUpdate);
         Person testPerson = personList.get(personList.size() - 1);
-        assertThat(testPerson.getDivorced()).isEqualTo(UPDATED_DIVORCED);
         assertThat(testPerson.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testPerson.getImg()).isEqualTo(UPDATED_IMG);
         assertThat(testPerson.getGender()).isEqualTo(UPDATED_GENDER);
@@ -1038,7 +1008,7 @@ class PersonResourceIT {
     @Transactional
     void patchNonExistingPerson() throws Exception {
         int databaseSizeBeforeUpdate = personRepository.findAll().size();
-        person.setId(count.incrementAndGet());
+        person.setId(String.valueOf(count.incrementAndGet()));
 
         // Create the Person
         PersonDTO personDTO = personMapper.toDto(person);
@@ -1061,7 +1031,7 @@ class PersonResourceIT {
     @Transactional
     void patchWithIdMismatchPerson() throws Exception {
         int databaseSizeBeforeUpdate = personRepository.findAll().size();
-        person.setId(count.incrementAndGet());
+        person.setId(String.valueOf(count.incrementAndGet()));
 
         // Create the Person
         PersonDTO personDTO = personMapper.toDto(person);
@@ -1084,7 +1054,7 @@ class PersonResourceIT {
     @Transactional
     void patchWithMissingIdPathParamPerson() throws Exception {
         int databaseSizeBeforeUpdate = personRepository.findAll().size();
-        person.setId(count.incrementAndGet());
+        person.setId(String.valueOf(count.incrementAndGet()));
 
         // Create the Person
         PersonDTO personDTO = personMapper.toDto(person);

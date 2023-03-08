@@ -11,11 +11,8 @@
     -->
     <changeSet id="20230307052336-1" author="jhipster">
         <createTable tableName="person">
-            <column name="id" type="bigint">
+            <column name="id" type="varchar">
                 <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="divorced" type="varchar(255)">
-                <constraints nullable="true" />
             </column>
             <column name="name" type="varchar(255)">
                 <constraints nullable="true" />
@@ -38,10 +35,10 @@
             <column name="nationality" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="father_id" type="bigint">
+            <column name="father_id" type="varchar">
                 <constraints nullable="true" />
             </column>
-            <column name="mother_id" type="bigint">
+            <column name="mother_id" type="varchar">
                 <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
@@ -52,16 +49,27 @@
 
     <changeSet id="20230307052336-1-relations" author="jhipster">
 
-        <createTable tableName="rel_person_spouce">
-            <column name="person_id" type="bigint">
+        <createTable tableName="rel_person_spouse">
+            <column name="person_id" type="varchar">
                 <constraints nullable="false"/>
             </column>
-            <column name="spouce_id" type="bigint">
+            <column name="spouse_id" type="varchar">
                 <constraints nullable="false"/>
             </column>
         </createTable>
 
-        <addPrimaryKey columnNames="person_id, spouce_id" tableName="rel_person_spouce"/>
+        <addPrimaryKey columnNames="person_id, spouse_id" tableName="rel_person_spouse"/>
+
+        <createTable tableName="rel_person_divorced">
+            <column name="person_id" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+            <column name="divorced_id" type="varchar">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="person_id, divorced_id" tableName="rel_person_divorced"/>
     </changeSet>
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
@@ -80,8 +88,7 @@
                   separator=";"
                   tableName="person"
                   usePreparedStatements="true">
-            <column name="id" type="numeric"/>
-            <column name="divorced" type="string"/>
+            <column name="id" type="varchar"/>
             <column name="name" type="string"/>
             <column name="img" type="string"/>
             <column name="gender" type="string"/>

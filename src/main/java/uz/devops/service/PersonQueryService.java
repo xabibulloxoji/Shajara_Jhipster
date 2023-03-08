@@ -88,10 +88,8 @@ public class PersonQueryService extends QueryService<Person> {
                 specification = specification.and(distinct(criteria.getDistinct()));
             }
             if (criteria.getId() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getId(), Person_.id));
-            }
-            if (criteria.getDivorced() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getDivorced(), Person_.divorced));
+                specification = specification.and(buildStringSpecification(criteria.getId(),
+                    Person_.id));
             }
             if (criteria.getName() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getName(), Person_.name));
@@ -136,6 +134,21 @@ public class PersonQueryService extends QueryService<Person> {
                 specification =
                     specification.and(
                         buildSpecification(criteria.getSpouseId(), root -> root.join(Person_.spouses, JoinType.LEFT).get(Person_.id))
+                    );
+            }
+            if (criteria.getDivorcedPeopleId() != null) {
+                specification =
+                    specification.and(
+                        buildSpecification(
+                            criteria.getDivorcedPeopleId(),
+                            root -> root.join(Person_.divorcedPeople, JoinType.LEFT).get(Person_.id)
+                        )
+                    );
+            }
+            if (criteria.getDivorceesId() != null) {
+                specification =
+                    specification.and(
+                        buildSpecification(criteria.getDivorceesId(), root -> root.join(Person_.divorcees, JoinType.LEFT).get(Person_.id))
                     );
             }
         }
